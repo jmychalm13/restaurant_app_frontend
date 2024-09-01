@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 
 export function Content() {
   return (
-    <div className="container">
+    <div className="min-h-screen">
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<MenuItemsIndex />} />
