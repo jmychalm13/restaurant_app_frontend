@@ -13,13 +13,41 @@ export function MenuItemsIndex() {
   };
 
   const handleAddToOrderList = (item) => {
-    if (item.availability) {
-      setSelectedItems((prevItems) => [...prevItems, item]);
+    console.log("added");
+    const existingItem = selectedItems.find((i) => i.id === item.id);
+    if (existingItem) {
+      setSelectedItems(selectedItems.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)));
+    } else {
+      setSelectedItems([...selectedItems, { ...item, quantity: 1 }]);
     }
   };
 
   const handleSubmitOrder = () => {
-    console.log("triggered");
+    console.log("submit function triggered");
+    console.log("selectedItems", selectedItems);
+    axios
+      .post(
+        "http://localhost:3000/orders.json",
+        {
+          items: selectedItems.map((item) => ({
+            menu_item_id: item.id,
+            quantity: item.quantity,
+            unit_price: parseFloat(item.price),
+          })),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("response", response.data);
+        setSelectedItems([]);
+      })
+      .catch((error) => {
+        console.error("Error placing order:", error.response?.data || error.message);
+      });
   };
 
   useEffect(handleGetMenuItems, []);
