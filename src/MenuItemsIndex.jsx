@@ -4,6 +4,21 @@ import { useState, useEffect } from "react";
 export function MenuItemsIndex() {
   const [menuItems, setMenuItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [quantities, setQuantities] = useState({});
+
+  const handleIncrement = (itemId) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [itemId]: (prevQuantities[itemId] || 0) + 1,
+    }));
+  };
+
+  const handleDecrement = (itemId) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [itemId]: prevQuantities[itemId] > 0 ? prevQuantities[itemId] - 1 : 0,
+    }));
+  };
 
   const handleGetMenuItems = () => {
     axios.get("http://localhost:3000/menu_items.json").then((response) => {
@@ -59,10 +74,30 @@ export function MenuItemsIndex() {
         {menuItems.map((item) => (
           <div
             key={item.id}
-            className={`flex justify-between ${!item.availability ? "text-gray-500" : "text-black cursor-pointer"}`}
+            className={`flex items-center space-x-4 border-b border-gray-200 ${
+              !item.availability ? "text-gray-500" : "text-black cursor-pointer"
+            }`}
           >
-            <p onClick={item.availability ? () => handleAddToOrderList(item) : null}>{item.name}</p>
-            <p className="font-bold">${item.price}</p>
+            <span className="flex-1 text-gray-800">{item.name}</span>
+            <div className="flex items-center">
+              <button
+                type="button"
+                onClick={() => handleDecrement(item.id)}
+                className="bg-red-500 text-white px-2 py-1 rounded-l hover:bg-red-600"
+              >
+                -
+              </button>
+              <span className="px-4 py-1 text-gray-800">{quantities[item.id] || 0}</span>
+              <button
+                type="button"
+                onClick={() => handleIncrement(item.id)}
+                className="bg-green-500 text-white px-2 py-1 rounded-r hover:bg-green-600"
+              >
+                +
+              </button>
+            </div>
+            {/* <p onClick={item.availability ? () => handleAddToOrderList(item) : null}>{item.name}</p>
+            <p className="font-bold">${item.price}</p> */}
           </div>
         ))}
       </div>
