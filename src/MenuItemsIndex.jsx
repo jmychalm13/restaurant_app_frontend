@@ -75,10 +75,10 @@ export function MenuItemsIndex() {
           <div
             key={item.id}
             className={`flex items-center space-x-4 border-b border-gray-200 ${
-              !item.availability ? "text-gray-500" : "text-black cursor-pointer"
+              !item.availability ? "text-gray-500" : "text-black"
             }`}
           >
-            <span className="flex-1 text-gray-800">{item.name}</span>
+            <span className="flex-1">{item.name}</span>
             <div className="flex items-center">
               <button
                 type="button"
@@ -89,6 +89,7 @@ export function MenuItemsIndex() {
               </button>
               <span className="px-4 py-1 text-gray-800">{quantities[item.id] || 0}</span>
               <button
+                disabled={!item.availability}
                 type="button"
                 onClick={() => handleIncrement(item.id)}
                 className="bg-green-500 text-white px-2 py-1 rounded-r hover:bg-green-600"
