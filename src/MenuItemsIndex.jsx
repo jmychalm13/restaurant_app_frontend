@@ -22,7 +22,6 @@ export function MenuItemsIndex() {
 
   const handleGetMenuItems = () => {
     axios.get("http://localhost:3000/menu_items.json").then((response) => {
-      console.log(response.data);
       setMenuItems(response.data);
     });
   };
@@ -38,30 +37,22 @@ export function MenuItemsIndex() {
   };
 
   const handleSubmitOrder = () => {
-    console.log("submit function triggered");
-    console.log("selectedItems", selectedItems);
+    const items = menuItems
+      .filter((item) => quantities[item.id] > 0)
+      .map((item) => ({
+        menu_item_id: item.id,
+        quantity: quantities[item.id],
+        unit_price: item.price,
+      }));
+
     axios
-      .post(
-        "http://localhost:3000/orders.json",
-        {
-          items: selectedItems.map((item) => ({
-            menu_item_id: item.id,
-            quantity: item.quantity,
-            unit_price: parseFloat(item.price),
-          })),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .post("http://localhost:3000/orders.json", { items })
+      // eslint-disable-next-line no-unused-vars
       .then((response) => {
-        console.log("response", response.data);
-        setSelectedItems([]);
+        console.log("Order created");
       })
       .catch((error) => {
-        console.error("Error placing order:", error.response?.data || error.message);
+        console.error("Error submitting order:", error);
       });
   };
 
@@ -78,7 +69,9 @@ export function MenuItemsIndex() {
               !item.availability ? "text-gray-500" : "text-black"
             }`}
           >
-            <span className="flex-1">{item.name}</span>
+            <span className="flex-1">
+              {item.name} - ${item.price}
+            </span>
             <div className="flex items-center">
               <button
                 type="button"
