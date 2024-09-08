@@ -19,7 +19,7 @@ export function OrdersIndex() {
       <div>
         {orders.map((order) => (
           <div key={order.id}>
-            <p>{order.status}</p>
+            <p>{order.total_price}</p>
           </div>
         ))}
       </div>

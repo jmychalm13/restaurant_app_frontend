@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 
 export function MenuItemsIndex() {
   const [menuItems, setMenuItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
   const [quantities, setQuantities] = useState({});
 
   const handleIncrement = (itemId) => {
@@ -24,16 +23,6 @@ export function MenuItemsIndex() {
     axios.get("http://localhost:3000/menu_items.json").then((response) => {
       setMenuItems(response.data);
     });
-  };
-
-  const handleAddToOrderList = (item) => {
-    console.log("added");
-    const existingItem = selectedItems.find((i) => i.id === item.id);
-    if (existingItem) {
-      setSelectedItems(selectedItems.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)));
-    } else {
-      setSelectedItems([...selectedItems, { ...item, quantity: 1 }]);
-    }
   };
 
   const handleSubmitOrder = () => {
